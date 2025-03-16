@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: babilon-server
+    ports:
+      - 3000:3000
+    depends_on:
+      postgres:
+      redis:
+    restart: unless-stopped
+    networks:
+      - babilon-network
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: babilon-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_PASSWORD=postgres_password
+      - POSTGRES_DB=babilon-db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - babilon-network
+
+  redis:
+    image: redis:latest
+    restart: unless-stopped
+    container_name: babilon-redis
+    command: redis-server --requirepass redis_password
+    volumes:
+      - redis_data:/data
+    networks:
+      - babilon-network
+
+networks:
+  babilon-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:

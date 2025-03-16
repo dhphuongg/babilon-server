@@ -1,0 +1,28 @@
+# Build
+dist
+build
+
+# Dependencies
+node_modules
+pnpm-lock.yaml
+
+# Generated
+*.generated.ts
+*.generated.js
+*.prisma.ts
+*.prisma.js
+
+# Testing
+coverage
+.nyc_output
+
+# Environment and misc
+.env
+.env.*
+*.log
+.DS_Store
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
