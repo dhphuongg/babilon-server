@@ -14,16 +14,95 @@ model User {
   id        String   @id @default(uuid())
   email     String   @unique @map("email")
   password  String   @map("password")
+  username  String   @unique @map("username")
   fullName  String   @map("full_name")
+  signature String?  @map("signature")
   avatar    String?  @map("avatar")
   role      Role     @default(USER) @map("role")
+  social    Social?
+  socialId  String?  @map("social_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  Video     Video[]
+  otps      Otp[]
+
+  @@map("users")
+}
+
+model Social {
+  id        String   @id @default(uuid())
+  following String[] @map("following")
+  followers String[] @map("followers")
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @unique @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+}
+
+model Video {
+  id              String    @id @default(uuid())
+  description     String    @map("description")
+  originUrl       String    @map("origin_url")
+  cdnUrl          String    @map("cdn_url")
+  thumbnail       String    @map("thumbnail")
+  commentable     Boolean   @default(true) @map("commentable")
+  userId          String    @map("user_id")
+  user            User      @relation(fields: [userId], references: [id])
+  videoMetadataId String?   @unique @map("video_metadata_id")
+  comments        Comment[]
+  likes           Like[]
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  @@map("videos")
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  comment   String   @map("comment")
+  userId    String   @map("user_id")
+  videoId   String   @map("video_id")
+  video     Video    @relation(fields: [videoId], references: [id])
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@map("users")
+  @@map("comments")
+}
+
+model Like {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  videoId   String   @map("video_id")
+  video     Video    @relation(fields: [videoId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([userId, videoId])
+  @@map("likes")
+}
+
+model Otp {
+  id        String   @id @default(uuid())
+  code      String   @map("code")
+  email     String   @map("email")
+  type      OtpType  @map("type")
+  expiresAt DateTime @map("expires_at")
+  isUsed    Boolean  @default(false) @map("is_used")
+  userId    String?  @map("user_id")
+  user      User?    @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([email, type])
+  @@map("otps")
 }
 
 enum Role {
   ADMIN
   USER
+}
+
+enum OtpType {
+  REGISTER
+  PASSWORD_RESET
 }
