@@ -17,9 +17,18 @@ export class RegisterHandler implements ICommandHandler<RegisterCommand> {
   async execute(command: RegisterCommand): Promise<any> {
     const { registerDto } = command;
 
-    const userFound = await this.userRepository.getByEmail(registerDto.email);
-    if (userFound) {
-      throw new BadRequestException('Email đã tồn tại');
+    const userFoundByEmail = await this.userRepository.getByEmail(
+      registerDto.email,
+    );
+    if (userFoundByEmail) {
+      throw new BadRequestException('Địa chỉ email đã tồn tại');
+    }
+
+    const userFoundByUsername = await this.userRepository.getByUsername(
+      registerDto.username,
+    );
+    if (userFoundByUsername) {
+      throw new BadRequestException('Tên người dùng đã tồn tại');
     }
 
     const hashedPassword = await bcrypt.hash(

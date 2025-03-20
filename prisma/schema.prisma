@@ -24,7 +24,6 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
   Video     Video[]
-  otps      Otp[]
 
   @@map("users")
 }
@@ -88,8 +87,6 @@ model Otp {
   type      OtpType  @map("type")
   expiresAt DateTime @map("expires_at")
   isUsed    Boolean  @default(false) @map("is_used")
-  userId    String?  @map("user_id")
-  user      User?    @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
