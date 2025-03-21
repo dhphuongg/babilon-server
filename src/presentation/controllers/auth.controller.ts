@@ -40,7 +40,7 @@ export class AuthController {
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Login with student code and password' })
+  @ApiOperation({ summary: 'Login with email or username' })
   async login(@Body() loginRequestDto: LoginRequestDto): Promise<any> {
     const command = new LoginCommand(loginRequestDto);
     const result = await this.commandBus.execute<LoginCommand>(command);

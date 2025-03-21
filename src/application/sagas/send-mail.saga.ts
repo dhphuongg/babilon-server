@@ -22,7 +22,7 @@ export class SendMailSaga {
   ) {}
 
   @Saga()
-  studentRegistered = (
+  sendMailSaga = (
     events$: Observable<SendMailEvent>,
   ): Observable<void | undefined> => {
     return events$.pipe(

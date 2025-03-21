@@ -10,10 +10,10 @@ export class LogoutHandler implements ICommandHandler<LogoutCommand> {
   constructor(@Inject(CACHE_MANAGER) private readonly cacheService: Cache) {}
 
   async execute(command: LogoutCommand) {
-    const { studentCode } = command;
+    const { userId } = command;
 
     // Remove token from cache
-    await this.cacheService.del(`ACCESS_TOKEN:${studentCode}`);
+    await this.cacheService.del(`ACCESS_TOKEN:${userId}`);
 
     return { message: 'Đăng xuất thành công' };
   }

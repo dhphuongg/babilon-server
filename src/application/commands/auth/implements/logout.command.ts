@@ -1,5 +1,5 @@
 import { ICommand } from '@nestjs/cqrs';
 
 export class LogoutCommand implements ICommand {
-  constructor(public readonly studentCode: string) {}
+  constructor(public readonly userId: string) {}
 }

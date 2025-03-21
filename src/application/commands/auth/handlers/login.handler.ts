@@ -25,11 +25,10 @@ export class LoginHandler implements ICommandHandler<LoginCommand> {
 
   async execute(command: LoginCommand): Promise<any> {
     const {
-      loginRequestDto: { email, password },
+      loginRequestDto: { emailOrUsername, password },
     } = command;
 
-    // get user by student code
-    const user = await this.getAuthenticatedUser(email, password);
+    const user = await this.getAuthenticatedUser(emailOrUsername, password);
 
     // sign jwt token
     const payload: JwtPayload = {
@@ -55,11 +54,15 @@ export class LoginHandler implements ICommandHandler<LoginCommand> {
     return { accessToken, refreshToken, role: user.role };
   }
 
-  private async getAuthenticatedUser(email: string, password: string) {
-    const user = await this.userRepository.getByEmail(email);
+  private async getAuthenticatedUser(
+    emailOrUsername: string,
+    password: string,
+  ) {
+    const user =
+      await this.userRepository.getByEmailOrUsername(emailOrUsername);
     if (!user) {
       throw new BadRequestException(
-        'Email hoặc mật khẩu không chính xác. Vui lòng thử lại.',
+        'Tên đăng nhập hoặc mật khẩu không chính xác. Vui lòng thử lại.',
       );
     }
 
