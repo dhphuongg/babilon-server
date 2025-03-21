@@ -34,7 +34,7 @@ export class AuthGuard implements CanActivate {
     const token = this.extractTokenFromHeader(request);
 
     if (!token) {
-      throw new UnauthorizedException('No token provided');
+      throw new UnauthorizedException('Yêu cầu cung cấp token xác thực');
     }
 
     try {
@@ -49,30 +49,31 @@ export class AuthGuard implements CanActivate {
         );
         // compare token to check session
         if (accessToken !== token) {
-          throw new UnauthorizedException('Invalid token');
+          throw new UnauthorizedException('Token xác thực không hợp lệ');
         }
       }
 
       // Add payload to request object for use in controllers
       request.user = payload;
 
+      // Check if user not exists
       const user = await this.prisma.user.findUnique({
         where: { id: payload.userId },
       });
-
       if (!user) {
-        console.log('User not found');
-        throw new UnauthorizedException('Invalid token');
+        console.log('Không tìm thấy người dùng');
+        throw new UnauthorizedException('Token xác thực không hợp lệ');
       }
 
       return true;
     } catch (error: any) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      throw new UnauthorizedException(error.message || 'Invalid token');
+      throw new UnauthorizedException(error.message);
     }
   }
 
   private extractTokenFromHeader(request: Request): string | undefined {
+    // Extract token from Authorization header
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
     return type === 'Bearer' ? token : undefined;
   }
