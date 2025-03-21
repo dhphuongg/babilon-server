@@ -1,5 +1,5 @@
 import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
-import { Inject } from '@nestjs/common';
+import { BadRequestException, Inject } from '@nestjs/common';
 import { OtpType } from '@prisma/client';
 
 import { RequestOtpCommand } from '../implements/request-otp.command';
@@ -50,7 +50,7 @@ export class RequestOtpHandler implements ICommandHandler<RequestOtpCommand> {
     // find user by email
     const user = await this.userRepository.getByEmail(email);
     if (user) {
-      return { message: 'Địa chỉ email đã được sử dụng' };
+      throw new BadRequestException('Địa chỉ email đã được sử dụng');
     }
 
     // Emit email event
@@ -71,7 +71,7 @@ export class RequestOtpHandler implements ICommandHandler<RequestOtpCommand> {
     // find user by email
     const user = await this.userRepository.getByEmail(email);
     if (!user) {
-      return { message: 'Email không chính xác. Vui lòng thử lại' };
+      throw new BadRequestException('Email không chính xác.');
     }
 
     // Emit email event

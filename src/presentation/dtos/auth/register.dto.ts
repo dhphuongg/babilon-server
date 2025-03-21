@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsOptional, IsString } from 'class-validator';
+import { IsEmail, IsString, MaxLength, MinLength } from 'class-validator';
+
+import { AppConstant } from 'src/domain/constants';
 
 export class RegisterDto {
   @IsEmail()
@@ -18,7 +20,9 @@ export class RegisterDto {
   @ApiProperty()
   readonly fullName: string;
 
-  @IsOptional()
-  @ApiProperty({ type: 'string', format: 'binary', required: false })
-  avatar?: Express.Multer.File;
+  @IsString()
+  @MinLength(AppConstant.Otp.OTP_CODE_LENGTH)
+  @MaxLength(AppConstant.Otp.OTP_CODE_LENGTH)
+  @ApiProperty()
+  readonly otpCode: string;
 }

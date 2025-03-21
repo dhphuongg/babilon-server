@@ -4,17 +4,10 @@ import {
   Get,
   HttpCode,
   HttpStatus,
-  ParseFilePipeBuilder,
   Post,
-  UploadedFile,
-  UseInterceptors,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { ApiConsumes, ApiOperation } from '@nestjs/swagger';
-import * as multer from 'multer';
-import * as fs from 'fs';
-import * as path from 'path';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiOperation } from '@nestjs/swagger';
 
 import {
   ChangePasswordCommand,
@@ -32,36 +25,8 @@ export class AuthController {
   constructor(private readonly commandBus: CommandBus) {}
 
   @Post('register')
-  @ApiOperation({ summary: 'Student register with form' })
-  @ApiConsumes('multipart/form-data')
-  @UseInterceptors(
-    FileInterceptor('avatar', {
-      storage: multer.diskStorage({
-        destination(req, file, callback) {
-          const dest = path.join(process.cwd(), 'uploads');
-          if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true });
-          callback(null, dest);
-        },
-        filename(req, file, callback) {
-          callback(null, `${Date.now()}${path.extname(file.originalname)}`);
-        },
-      }),
-    }),
-  )
-  async register(
-    @Body() registerDto: RegisterDto,
-    @UploadedFile(
-      new ParseFilePipeBuilder()
-        .addFileTypeValidator({ fileType: 'image' })
-        // .addMaxSizeValidator({ maxSize: 1000 })
-        .build({
-          fileIsRequired: false,
-          errorHttpStatusCode: HttpStatus.UNSUPPORTED_MEDIA_TYPE,
-        }),
-    )
-    avatar?: Express.Multer.File,
-  ): Promise<any> {
-    registerDto.avatar = avatar;
+  @ApiOperation({ summary: 'User register' })
+  async register(@Body() registerDto: RegisterDto): Promise<any> {
     return this.commandBus.execute<RegisterCommand>(
       new RegisterCommand(registerDto),
     );

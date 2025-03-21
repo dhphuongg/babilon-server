@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { User } from '@prisma/client';
+import { OtpType, User } from '@prisma/client';
 
 import { IUserRepository } from '../../domain/repositories/user.repository.interface';
 import { PrismaService } from '../prisma/prisma.service';
@@ -21,8 +21,16 @@ export class UserRepository implements IUserRepository {
     return this.prisma.user.findUnique({ where: { username } });
   }
 
-  createUser(data: CreateUserDto): Promise<User> {
-    return this.prisma.user.create({ data });
+  async createUser(data: CreateUserDto): Promise<User> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { otpCode, ...userData } = data;
+    return this.prisma.$transaction(async (pt) => {
+      const user = await pt.user.create({ data: userData });
+      await pt.otp.deleteMany({
+        where: { email: user.email, type: OtpType.REGISTER },
+      });
+      return user;
+    });
   }
 
   updatePassword(id: string, newPassword: string): Promise<User> {
