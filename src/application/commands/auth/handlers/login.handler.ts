@@ -62,7 +62,7 @@ export class LoginHandler implements ICommandHandler<LoginCommand> {
       await this.userRepository.getByEmailOrUsername(emailOrUsername);
     if (!user) {
       throw new BadRequestException(
-        'Tên đăng nhập hoặc mật khẩu không chính xác. Vui lòng thử lại.',
+        'Tên đăng nhập hoặc mật khẩu không chính xác',
       );
     }
 
@@ -76,7 +76,7 @@ export class LoginHandler implements ICommandHandler<LoginCommand> {
     const isPasswordMatching = await bcrypt.compare(password, hashedPassword);
     if (!isPasswordMatching) {
       throw new BadRequestException(
-        'Email hoặc mật khẩu không chính xác. Vui lòng thử lại.',
+        'Tên đăng nhập hoặc mật khẩu không chính xác',
       );
     }
   }
