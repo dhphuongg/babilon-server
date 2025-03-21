@@ -4,9 +4,12 @@ import * as nodemailer from 'nodemailer';
 import * as ejs from 'ejs';
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import { IMailService } from '../../domain/interfaces/mail.service.interface';
+
+import {
+  IMailService,
+  MailTemplateSource,
+} from '../../domain/interfaces/mail.service.interface';
 import { EnvironmentConfig } from '../config/environment.config';
-import { MailTemplateSource } from '../../domain/constants/mail.constants';
 
 @Injectable()
 export class MailService implements IMailService {

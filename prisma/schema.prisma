@@ -23,7 +23,7 @@ model User {
   socialId  String?  @map("social_id")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  Video     Video[]
+  videos    Video[]
 
   @@map("users")
 }

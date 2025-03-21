@@ -1,4 +1,7 @@
-import { MailTemplateSource } from '../constants/mail.constants';
+import { AppConstant } from '../constants';
+
+export type MailTemplateSource =
+  (typeof AppConstant.Mail.MAIL_TEMPLATE_SOURCES)[keyof typeof AppConstant.Mail.MAIL_TEMPLATE_SOURCES];
 
 export type SendTemplateMailOptions = {
   to: string | string[];
