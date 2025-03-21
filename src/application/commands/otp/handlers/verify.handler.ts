@@ -1,5 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { BadRequestException, Inject } from '@nestjs/common';
+import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
 
 import { VerifyOtpCommand } from '../implements';
 import { OTP_REPOSITORY_TOKEN } from 'src/infrastructure/providers/otp.repository.provider';
@@ -13,6 +14,7 @@ export class VerifyOtpHandler implements ICommandHandler<VerifyOtpCommand> {
     @Inject(OTP_REPOSITORY_TOKEN)
     private readonly otpRepository: IOtpRepository,
     private readonly jwtService: JwtService,
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {}
 
   async execute(command: VerifyOtpCommand): Promise<any> {
@@ -29,9 +31,17 @@ export class VerifyOtpHandler implements ICommandHandler<VerifyOtpCommand> {
       throw new BadRequestException('Mã OTP đã hết hạn');
     }
 
+    // sign jwt token
     const authToken = this.jwtService.sign(
       { email, type },
       { expiresIn: `${AppConstant.Otp.OTP_EXP_MINUTES}m` },
+    );
+
+    // cache token to redis
+    await this.cacheManager.set(
+      `RESET_PASSWORD_TOKEN:${email}`,
+      authToken,
+      AppConstant.Otp.OTP_EXP_MINUTES * 60 * 1000,
     );
 
     return { authToken };

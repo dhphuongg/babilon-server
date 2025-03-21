@@ -7,5 +7,5 @@ export interface IUserRepository {
   getByEmail(email: string): Promise<User | null>;
   getByUsername(username: string): Promise<User | null>;
   createUser(data: CreateUserDto): Promise<User>;
-  updatePassword(studentCode: string, newPassword: string): Promise<User>;
+  updatePassword(id: string, newPassword: string): Promise<User>;
 }

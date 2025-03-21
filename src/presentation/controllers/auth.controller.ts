@@ -14,8 +14,14 @@ import {
   LoginCommand,
   LogoutCommand,
   RegisterCommand,
+  ResetPasswordCommand,
 } from 'src/application/commands/auth/implements';
-import { ChangePasswordDto, LoginRequestDto, RegisterDto } from '../dtos/auth';
+import {
+  ChangePasswordDto,
+  LoginRequestDto,
+  RegisterDto,
+  ResetPasswordDto,
+} from '../dtos/auth';
 import { Auth } from 'src/infrastructure/common/decorators/auth.decorator';
 import { User } from 'src/infrastructure/common/decorators/user-auth.decorator';
 import { UserAuth } from 'src/domain/interfaces/jwt-payload.interface';
@@ -53,6 +59,12 @@ export class AuthController {
     return this.commandBus.execute(
       new ChangePasswordCommand(user.userId, changePasswordDto),
     );
+  }
+
+  @Post('reset-password')
+  @ApiOperation({ summary: 'Reset password' })
+  resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
+    return this.commandBus.execute(new ResetPasswordCommand(resetPasswordDto));
   }
 
   @Post('logout')
