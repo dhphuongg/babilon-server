@@ -6,7 +6,7 @@ import {
   HttpStatus,
   Post,
 } from '@nestjs/common';
-import { CommandBus } from '@nestjs/cqrs';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ApiOperation } from '@nestjs/swagger';
 
 import {
@@ -25,10 +25,14 @@ import {
 import { Auth } from 'src/infrastructure/common/decorators/auth.decorator';
 import { User } from 'src/infrastructure/common/decorators/user-auth.decorator';
 import { UserAuth } from 'src/domain/interfaces/jwt-payload.interface';
+import { GetUserByIdQuery } from 'src/application/queries/user/implements';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly commandBus: CommandBus) {}
+  constructor(
+    private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
+  ) {}
 
   @Post('register')
   @ApiOperation({ summary: 'User register' })
@@ -77,7 +81,7 @@ export class AuthController {
   @Get('profile')
   @Auth()
   @ApiOperation({ summary: 'Get user profile' })
-  async getProfile(@User() user: UserAuth) {
-    return user;
+  async getProfile(@User() user: UserAuth): Promise<any> {
+    return this.queryBus.execute(new GetUserByIdQuery(user.userId));
   }
 }

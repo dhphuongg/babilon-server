@@ -9,8 +9,11 @@ import { CreateUserDto } from 'src/presentation/dtos/user';
 export class UserRepository implements IUserRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  getById(id: string): Promise<User | null> {
-    return this.prisma.user.findUnique({ where: { id } });
+  getById(
+    id: string,
+    select?: { [key in keyof User]?: boolean },
+  ): Promise<User | null> {
+    return this.prisma.user.findUnique({ where: { id }, select });
   }
 
   getByEmail(email: string): Promise<User | null> {
