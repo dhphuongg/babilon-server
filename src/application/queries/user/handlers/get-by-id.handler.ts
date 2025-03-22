@@ -19,6 +19,7 @@ export class GetUserByIdHandler implements IQueryHandler<GetUserByIdQuery> {
       id: true,
       username: true,
       fullName: true,
+      normalizedName: true,
       email: true,
       avatar: true,
       signature: true,

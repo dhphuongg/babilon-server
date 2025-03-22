@@ -10,6 +10,7 @@ import { VerifyOtpCommand } from '../../otp/implements';
 import { OtpType } from '@prisma/client';
 import { IOtpRepository } from 'src/domain/repositories/otp.repository.interface';
 import { OTP_REPOSITORY_TOKEN } from 'src/infrastructure/providers/otp.repository.provider';
+import { StringUtil } from 'src/infrastructure/common/utils';
 
 @CommandHandler(RegisterCommand)
 export class RegisterHandler implements ICommandHandler<RegisterCommand> {
@@ -55,6 +56,7 @@ export class RegisterHandler implements ICommandHandler<RegisterCommand> {
     await this.userRepository.createUser({
       ...registerDto,
       password: hashedPassword,
+      normalizedName: StringUtil.normalize(registerDto.fullName),
     });
 
     return { message: 'Đăng ký thành công' };
