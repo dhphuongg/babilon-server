@@ -41,7 +41,8 @@ model Social {
 
 model Video {
   id              String    @id @default(uuid())
-  description     String    @map("description")
+  title           String    @map("title")
+  normalizedTitle String    @map("normalized_title")
   originUrl       String    @map("origin_url")
   cdnUrl          String    @map("cdn_url")
   thumbnail       String    @map("thumbnail")
