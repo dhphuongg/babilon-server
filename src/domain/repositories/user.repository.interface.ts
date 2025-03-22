@@ -12,4 +12,5 @@ export interface IUserRepository {
   getByUsername(username: string): Promise<User | null>;
   createUser(data: CreateUserDto): Promise<User>;
   updatePassword(id: string, newPassword: string): Promise<User>;
+  updateById(id: string, data: Partial<User>): Promise<User>;
 }
