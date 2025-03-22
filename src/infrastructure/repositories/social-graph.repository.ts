@@ -19,4 +19,35 @@ export class SocialGraphRepository implements ISocialGraphRepository {
       });
     });
   }
+
+  async unfollowByUserId(actorId: string, targetUserId: string): Promise<void> {
+    const actorSocialGraph = await this.prisma.socialGraph.findUnique({
+      where: { userId: actorId },
+    });
+    const targetSocialGraph = await this.prisma.socialGraph.findUnique({
+      where: { userId: targetUserId },
+    });
+
+    if (!actorSocialGraph || !targetSocialGraph) {
+      throw new Error('Social graph not found');
+    }
+
+    const actorFollowing = actorSocialGraph.following.filter(
+      (userId) => userId !== targetUserId,
+    );
+    const targetFollowers = targetSocialGraph.followers.filter(
+      (userId) => userId !== actorId,
+    );
+
+    return this.prisma.$transaction(async (pt) => {
+      await pt.socialGraph.update({
+        where: { userId: actorId },
+        data: { following: actorFollowing },
+      });
+      await pt.socialGraph.update({
+        where: { userId: targetUserId },
+        data: { followers: targetFollowers },
+      });
+    });
+  }
 }
