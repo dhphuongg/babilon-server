@@ -40,6 +40,7 @@ export class UserRepository implements IUserRepository {
       await pt.otp.deleteMany({
         where: { email: user.email, type: OtpType.REGISTER },
       });
+      await pt.socialGraph.create({ data: { userId: user.id } });
       return user;
     });
   }
