@@ -1,13 +1,15 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
-import { CommandBus } from '@nestjs/cqrs';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 
 import { User } from 'src/infrastructure/common/decorators/user-auth.decorator';
 import { UserAuth } from 'src/domain/interfaces/jwt-payload.interface';
@@ -19,10 +21,16 @@ import {
   FollowCommand,
   UnfollowCommand,
 } from 'src/application/commands/social-graph/implements';
+import { ApiOperation } from '@nestjs/swagger';
+import { IGetListParams } from '../dtos/request';
+import { GetFollowersQuery } from 'src/application/queries/user/implements';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly commandBus: CommandBus) {}
+  constructor(
+    private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
+  ) {}
 
   @Patch()
   @Auth()
@@ -33,6 +41,16 @@ export class UserController {
     return this.commandBus.execute(
       new UpdateUserByIdCommand(userId, updateUserDto),
     );
+  }
+
+  @Get('followers')
+  @Auth()
+  @ApiOperation({ summary: 'Get followers' })
+  getFollowers(
+    @User() { userId }: UserAuth,
+    @Query() params: IGetListParams,
+  ): Promise<any> {
+    return this.queryBus.execute(new GetFollowersQuery(userId, params));
   }
 
   @Post('follow/:userId')

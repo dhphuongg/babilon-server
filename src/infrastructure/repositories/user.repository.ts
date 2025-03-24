@@ -4,10 +4,30 @@ import { OtpType, User } from '@prisma/client';
 import { IUserRepository } from '../../domain/repositories/user.repository.interface';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from 'src/presentation/dtos/request/user';
+import { IGetListParams } from 'src/presentation/dtos/request';
 
 @Injectable()
 export class UserRepository implements IUserRepository {
   constructor(private readonly prisma: PrismaService) {}
+
+  getByIdList(
+    ids: string[],
+    {
+      params,
+      select,
+    }: {
+      params: IGetListParams;
+      select?: { [key in keyof User]?: boolean };
+    },
+  ): Promise<User[]> {
+    return this.prisma.user.findMany({
+      where: { id: { in: ids } },
+      select,
+      take: params.limit,
+      skip: (params.page - 1) * params.limit,
+      orderBy: { createdAt: 'desc' },
+    });
+  }
 
   getById(
     id: string,

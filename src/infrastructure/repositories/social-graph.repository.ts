@@ -2,10 +2,15 @@ import { Injectable } from '@nestjs/common';
 
 import { PrismaService } from '../prisma/prisma.service';
 import { ISocialGraphRepository } from 'src/domain/repositories/social-graph.repository.interface';
+import { SocialGraph } from '@prisma/client';
 
 @Injectable()
 export class SocialGraphRepository implements ISocialGraphRepository {
   constructor(private readonly prisma: PrismaService) {}
+
+  getByUserId(userId: string): Promise<SocialGraph | null> {
+    return this.prisma.socialGraph.findUnique({ where: { userId } });
+  }
 
   followByUserId(actorId: string, targetUserId: string): Promise<void> {
     return this.prisma.$transaction(async (pt) => {
