@@ -23,7 +23,10 @@ import {
 } from 'src/application/commands/social-graph/implements';
 import { ApiOperation } from '@nestjs/swagger';
 import { IGetListParams } from '../dtos/request';
-import { GetFollowersQuery } from 'src/application/queries/user/implements';
+import {
+  GetFollowersQuery,
+  GetFollowingQuery,
+} from 'src/application/queries/user/implements';
 
 @Controller('user')
 export class UserController {
@@ -41,6 +44,16 @@ export class UserController {
     return this.commandBus.execute(
       new UpdateUserByIdCommand(userId, updateUserDto),
     );
+  }
+
+  @Get('following')
+  @Auth()
+  @ApiOperation({ summary: 'Get following' })
+  getFollowing(
+    @User() { userId }: UserAuth,
+    @Query() params: IGetListParams,
+  ): Promise<any> {
+    return this.queryBus.execute(new GetFollowingQuery(userId, params));
   }
 
   @Get('followers')
