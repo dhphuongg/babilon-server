@@ -8,6 +8,18 @@ import { SocialGraph } from '@prisma/client';
 export class SocialGraphRepository implements ISocialGraphRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  countFollowersByUserId(userId: string): Promise<number> {
+    return this.prisma.socialGraph.count({
+      where: { following: { has: userId } },
+    });
+  }
+
+  countFollowingsByUserId(userId: string): Promise<number> {
+    return this.prisma.socialGraph.count({
+      where: { followers: { has: userId } },
+    });
+  }
+
   getByUserId(userId: string): Promise<SocialGraph | null> {
     return this.prisma.socialGraph.findUnique({ where: { userId } });
   }

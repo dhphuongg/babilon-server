@@ -4,12 +4,16 @@ import { Inject, NotFoundException } from '@nestjs/common';
 import { GetUserByIdQuery } from '../implements';
 import { IUserRepository } from 'src/domain/repositories/user.repository.interface';
 import { USER_REPOSITORY_TOKEN } from 'src/infrastructure/providers/user.repository.provider';
+import { SOCIAL_GRAPH_REPOSITORY_TOKEN } from 'src/infrastructure/providers/social-graph.repository.provider';
+import { ISocialGraphRepository } from 'src/domain/repositories/social-graph.repository.interface';
 
 @QueryHandler(GetUserByIdQuery)
 export class GetUserByIdHandler implements IQueryHandler<GetUserByIdQuery> {
   constructor(
     @Inject(USER_REPOSITORY_TOKEN)
     private readonly userRepository: IUserRepository,
+    @Inject(SOCIAL_GRAPH_REPOSITORY_TOKEN)
+    private readonly socialGraphRepository: ISocialGraphRepository,
   ) {}
 
   async execute(query: GetUserByIdQuery): Promise<any> {
@@ -30,6 +34,11 @@ export class GetUserByIdHandler implements IQueryHandler<GetUserByIdQuery> {
       throw new NotFoundException('Không tìm thấy thông tin người dùng');
     }
 
-    return user;
+    const followers =
+      await this.socialGraphRepository.countFollowersByUserId(userId);
+    const followings =
+      await this.socialGraphRepository.countFollowingsByUserId(userId);
+
+    return { ...user, count: { followers, followings } };
   }
 }
