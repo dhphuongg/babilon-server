@@ -1,6 +1,6 @@
 import { User } from '@prisma/client';
 
-import { CreateUserDto } from 'src/presentation/dtos/user';
+import { CreateUserDto } from 'src/presentation/dtos/request/user';
 
 export interface IUserRepository {
   getById(

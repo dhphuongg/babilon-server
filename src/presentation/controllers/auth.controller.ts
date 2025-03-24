@@ -21,7 +21,7 @@ import {
   LoginRequestDto,
   RegisterDto,
   ResetPasswordDto,
-} from '../dtos/auth';
+} from '../dtos/request/auth';
 import { Auth } from 'src/infrastructure/common/decorators/auth.decorator';
 import { User } from 'src/infrastructure/common/decorators/user-auth.decorator';
 import { UserAuth } from 'src/domain/interfaces/jwt-payload.interface';

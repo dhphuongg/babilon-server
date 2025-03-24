@@ -1,7 +1,7 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 
-import { RequestOtpDto, VerifyOtpDto } from '../dtos/otp';
+import { RequestOtpDto, VerifyOtpDto } from '../dtos/request/otp';
 import {
   RequestOtpCommand,
   VerifyOtpCommand,

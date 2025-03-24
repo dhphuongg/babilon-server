@@ -14,7 +14,7 @@ import { UserAuth } from 'src/domain/interfaces/jwt-payload.interface';
 import { Auth } from 'src/infrastructure/common/decorators/auth.decorator';
 
 import { UpdateUserByIdCommand } from 'src/application/commands/user/implements';
-import { UpdateUserDto } from '../dtos/user';
+import { UpdateUserDto } from '../dtos/request/user';
 import {
   FollowCommand,
   UnfollowCommand,

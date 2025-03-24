@@ -1,7 +1,7 @@
 import { Otp, OtpType } from '@prisma/client';
 
 import { IOtpRepository } from 'src/domain/repositories/otp.repository.interface';
-import { CreateOtpDto } from 'src/presentation/dtos/otp/create.dto';
+import { CreateOtpDto } from 'src/presentation/dtos/request/otp/create.dto';
 import { PrismaService } from '../prisma/prisma.service';
 
 export class OtpRepository implements IOtpRepository {

@@ -3,7 +3,7 @@ import { OtpType, User } from '@prisma/client';
 
 import { IUserRepository } from '../../domain/repositories/user.repository.interface';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateUserDto } from 'src/presentation/dtos/user';
+import { CreateUserDto } from 'src/presentation/dtos/request/user';
 
 @Injectable()
 export class UserRepository implements IUserRepository {
