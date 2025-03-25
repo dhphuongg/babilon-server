@@ -24,22 +24,22 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const status = exception.getStatus();
     const errorResponse = exception.getResponse() as ErrorResponse;
 
-    const message =
+    const error =
       typeof errorResponse === 'string'
         ? errorResponse
         : Array.isArray(errorResponse.message)
-          ? errorResponse.message[0]
+          ? errorResponse.message.join(', ')
           : errorResponse.message || exception.message;
 
     this.logger.error(
-      `[${request.method}] ${request.url} - Status: ${status} - ${message}`,
+      `[${request.method}] ${request.url} - Status: ${status} - ${error}`,
       exception.stack,
     );
 
     response.status(status).json({
       success: false,
       statusCode: status,
-      message,
+      error,
     });
   }
 }
