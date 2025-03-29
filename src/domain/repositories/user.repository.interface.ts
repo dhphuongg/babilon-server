@@ -21,4 +21,5 @@ export interface IUserRepository {
   createUser(data: CreateUserDto): Promise<User>;
   updatePassword(id: string, newPassword: string): Promise<User>;
   updateById(id: string, data: Partial<User>): Promise<User>;
+  addDeviceToken(id: string, deviceToken: string): Promise<User>;
 }

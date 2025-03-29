@@ -25,7 +25,7 @@ export class LoginHandler implements ICommandHandler<LoginCommand> {
 
   async execute(command: LoginCommand): Promise<any> {
     const {
-      loginRequestDto: { emailOrUsername, password },
+      loginRequestDto: { emailOrUsername, password, deviceToken },
     } = command;
 
     const user = await this.getAuthenticatedUser(emailOrUsername, password);
@@ -52,6 +52,9 @@ export class LoginHandler implements ICommandHandler<LoginCommand> {
 
     // cache token
     await this.cacheManager.set(`ACCESS_TOKEN:${accessToken}`, user.id, ttl);
+
+    // update device token
+    await this.userRepository.addDeviceToken(user.id, deviceToken);
 
     return { accessToken, refreshToken, role: user.role };
   }

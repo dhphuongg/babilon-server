@@ -75,4 +75,11 @@ export class UserRepository implements IUserRepository {
   updateById(id: string, data: Partial<User>): Promise<User> {
     return this.prisma.user.update({ where: { id }, data });
   }
+
+  addDeviceToken(id: string, deviceToken: string): Promise<User> {
+    return this.prisma.user.update({
+      where: { id },
+      data: { deviceTokens: { push: deviceToken } },
+    });
+  }
 }

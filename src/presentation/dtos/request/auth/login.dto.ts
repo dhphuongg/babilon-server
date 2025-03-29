@@ -9,4 +9,8 @@ export class LoginRequestDto {
   @IsString()
   @ApiProperty()
   readonly password: string;
+
+  @IsString()
+  @ApiProperty()
+  readonly deviceToken: string;
 }
