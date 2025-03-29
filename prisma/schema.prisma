@@ -20,6 +20,7 @@ model User {
   signature      String?      @map("signature")
   avatar         String?      @map("avatar")
   role           Role         @default(USER) @map("role")
+  deviceTokens   String[]     @map("device_tokens")
   socialGraph    SocialGraph?
   socialGraphId  String?      @map("social_id")
   createdAt      DateTime     @default(now()) @map("created_at")
@@ -96,6 +97,21 @@ model Otp {
 
   @@index([email, type])
   @@map("otps")
+}
+
+model Notification {
+  id        String    @id @default(uuid())
+  userId    String    @map("user_id")
+  videoId   String    @map("video_id")
+  receivers String[]  @map("receivers")
+  title     String    @map("title")
+  deepLink  String?   @map("deep_link")
+  isRead    Boolean   @default(false) @map("is_read")
+  readAt    DateTime? @map("read_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  @@map("notifications")
 }
 
 enum Role {

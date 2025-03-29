@@ -27,7 +27,7 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   });
 
-  app.use(rateLimit({ windowMs: 1000, limit: 50 }));
+  // app.use(rateLimit({ windowMs: 1000, limit: 50 }));
 
   // static files
   app.useStaticAssets(path.join(process.cwd(), 'uploads'), {
