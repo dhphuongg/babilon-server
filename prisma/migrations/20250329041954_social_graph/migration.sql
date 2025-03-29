@@ -26,4 +26,4 @@ CREATE TABLE "social_graph" (
 CREATE UNIQUE INDEX "social_graph_user_id_key" ON "social_graph"("user_id");
 
 -- AddForeignKey
-ALTER TABLE "social_graph" ADD CONSTRAINT "social_graph_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "social_graph" ADD CONSTRAINT "social_graph_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
