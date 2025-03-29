@@ -44,11 +44,11 @@ export class AuthGuard implements CanActivate {
 
       if (payload.role !== Role.ADMIN) {
         // get token from cache
-        const accessToken = await this.cacheManager.get(
-          `ACCESS_TOKEN:${payload.userId}`,
+        const userIdFromCache = await this.cacheManager.get(
+          `ACCESS_TOKEN:${token}`,
         );
         // compare token to check session
-        if (accessToken !== token) {
+        if (userIdFromCache !== payload.userId) {
           throw new UnauthorizedException('Token xác thực không hợp lệ');
         }
       }

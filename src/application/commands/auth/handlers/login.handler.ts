@@ -49,7 +49,9 @@ export class LoginHandler implements ICommandHandler<LoginCommand> {
         infer: true,
       }),
     );
-    await this.cacheManager.set(`ACCESS_TOKEN:${user.id}`, accessToken, ttl);
+
+    // cache token
+    await this.cacheManager.set(`ACCESS_TOKEN:${accessToken}`, user.id, ttl);
 
     return { accessToken, refreshToken, role: user.role };
   }

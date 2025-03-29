@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Req,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ApiOperation } from '@nestjs/swagger';
@@ -26,6 +27,7 @@ import { Auth } from 'src/infrastructure/common/decorators/auth.decorator';
 import { User } from 'src/infrastructure/common/decorators/user-auth.decorator';
 import { UserAuth } from 'src/domain/interfaces/jwt-payload.interface';
 import { GetUserByIdQuery } from 'src/application/queries/user/implements';
+import { Request } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -74,8 +76,9 @@ export class AuthController {
   @Post('logout')
   @Auth()
   @ApiOperation({ summary: 'Logout' })
-  async logout(@User() user: UserAuth): Promise<any> {
-    return this.commandBus.execute(new LogoutCommand(user.userId));
+  async logout(@Req() request: Request): Promise<any> {
+    const token = request.headers.authorization?.split(' ')[1] ?? '';
+    return this.commandBus.execute(new LogoutCommand(token));
   }
 
   @Get('profile')
