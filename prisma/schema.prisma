@@ -100,16 +100,18 @@ model Otp {
 }
 
 model Notification {
-  id        String    @id @default(uuid())
-  userId    String    @map("user_id")
-  videoId   String    @map("video_id")
-  receivers String[]  @map("receivers")
-  title     String    @map("title")
-  deepLink  String?   @map("deep_link")
-  isRead    Boolean   @default(false) @map("is_read")
-  readAt    DateTime? @map("read_at")
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
+  id         String           @id @default(uuid())
+  userId     String           @map("user_id")
+  receiverId String           @map("receiver_id")
+  title      String           @map("title")
+  body       String           @map("body")
+  imageUrl   String?          @map("image_url")
+  type       NotificationType @map("type")
+  videoId    String?          @map("video_id")
+  isRead     Boolean          @default(false) @map("is_read")
+  readAt     DateTime?        @map("read_at")
+  createdAt  DateTime         @default(now()) @map("created_at")
+  updatedAt  DateTime         @updatedAt @map("updated_at")
 
   @@map("notifications")
 }
@@ -122,4 +124,13 @@ enum Role {
 enum OtpType {
   REGISTER
   PASSWORD_RESET
+}
+
+enum NotificationType {
+  FOLLOW
+  POST_VIDEO
+  LIKE_VIDEO
+  COMMENT_VIDEO
+  SHARE_VIDEO
+  SYSTEM
 }

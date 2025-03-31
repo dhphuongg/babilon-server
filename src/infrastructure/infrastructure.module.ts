@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { WebSocketModule } from './websocket/websocket.module';
 import { RepositoryProviders } from './providers';
 import { CacheModule } from './cache/cache.module';
+import { FcmModule } from './fcm/fcm.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { CacheModule } from './cache/cache.module';
     PrismaModule,
     MailModule,
     WebSocketModule,
+    FcmModule,
   ],
   providers: [...RepositoryProviders],
   exports: [
@@ -25,6 +27,7 @@ import { CacheModule } from './cache/cache.module';
     PrismaModule,
     AppConfigModule,
     WebSocketModule,
+    FcmModule,
   ],
 })
 export class InfrastructureModule {}

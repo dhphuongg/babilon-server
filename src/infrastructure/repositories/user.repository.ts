@@ -36,6 +36,16 @@ export class UserRepository implements IUserRepository {
     return this.prisma.user.findUnique({ where: { id }, select });
   }
 
+  getAllById(
+    ids: string[],
+    select?: { [key in keyof User]?: boolean },
+  ): Promise<User[]> {
+    return this.prisma.user.findMany({
+      where: { id: { in: ids } },
+      select,
+    });
+  }
+
   getByEmail(email: string): Promise<User | null> {
     return this.prisma.user.findUnique({ where: { email } });
   }
@@ -76,10 +86,16 @@ export class UserRepository implements IUserRepository {
     return this.prisma.user.update({ where: { id }, data });
   }
 
-  addDeviceToken(id: string, deviceToken: string): Promise<User> {
-    return this.prisma.user.update({
-      where: { id },
-      data: { deviceTokens: { push: deviceToken } },
+  async addDeviceToken(id: string, deviceToken: string): Promise<User> {
+    const isExisted = await this.prisma.user.findFirst({
+      where: { id, deviceTokens: { has: deviceToken } },
     });
+
+    return isExisted
+      ? isExisted
+      : this.prisma.user.update({
+          where: { id },
+          data: { deviceTokens: { push: deviceToken } },
+        });
   }
 }

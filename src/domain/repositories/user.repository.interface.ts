@@ -15,6 +15,10 @@ export interface IUserRepository {
     id: string,
     select?: { [key in keyof User]?: boolean },
   ): Promise<User | null>;
+  getAllById(
+    ids: string[],
+    select?: { [key in keyof User]?: boolean },
+  ): Promise<User[]>;
   getByEmail(email: string): Promise<User | null>;
   getByEmailOrUsername(emailOrUsername: string): Promise<User | null>;
   getByUsername(username: string): Promise<User | null>;

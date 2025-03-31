@@ -20,6 +20,13 @@ export class SocialGraphRepository implements ISocialGraphRepository {
     });
   }
 
+  async isFollowing(actorId: string, targetId: string): Promise<boolean> {
+    const isFollowing = await this.prisma.socialGraph.findFirst({
+      where: { userId: actorId, following: { has: targetId } },
+    });
+    return !!isFollowing;
+  }
+
   getByUserId(userId: string): Promise<SocialGraph | null> {
     return this.prisma.socialGraph.findUnique({ where: { userId } });
   }
