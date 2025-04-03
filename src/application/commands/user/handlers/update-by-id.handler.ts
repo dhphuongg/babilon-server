@@ -1,10 +1,11 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler, QueryBus } from '@nestjs/cqrs';
 import { BadRequestException, Inject, NotFoundException } from '@nestjs/common';
 
 import { UpdateUserByIdCommand } from '../implements';
 import { IUserRepository } from 'src/domain/repositories/user.repository.interface';
 import { USER_REPOSITORY_TOKEN } from 'src/infrastructure/providers/user.repository.provider';
 import { StringUtil } from 'src/infrastructure/common/utils';
+import { GetUserByIdQuery } from 'src/application/queries/user/implements';
 
 @CommandHandler(UpdateUserByIdCommand)
 export class UpdateUserByIdHandler
@@ -13,6 +14,7 @@ export class UpdateUserByIdHandler
   constructor(
     @Inject(USER_REPOSITORY_TOKEN)
     private readonly userRepository: IUserRepository,
+    private readonly queryBus: QueryBus,
   ) {}
 
   async execute(command: UpdateUserByIdCommand): Promise<any> {
@@ -41,6 +43,6 @@ export class UpdateUserByIdHandler
         : user.normalizedName,
     });
 
-    return updatedUser;
+    return this.queryBus.execute(new GetUserByIdQuery(updatedUser.id));
   }
 }
