@@ -58,8 +58,11 @@ export class UserRepository implements IUserRepository {
     });
   }
 
-  getByUsername(username: string): Promise<User | null> {
-    return this.prisma.user.findUnique({ where: { username } });
+  getByUsername(
+    username: string,
+    select?: { [key in keyof User]?: boolean },
+  ): Promise<User | null> {
+    return this.prisma.user.findUnique({ where: { username }, select });
   }
 
   async createUser(data: CreateUserDto): Promise<User> {

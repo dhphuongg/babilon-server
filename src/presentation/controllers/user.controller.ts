@@ -26,6 +26,7 @@ import { IGetListParams } from '../dtos/request';
 import {
   GetFollowersQuery,
   GetFollowingQuery,
+  GetUserByUsernameQuery,
 } from 'src/application/queries/user/implements';
 
 @Controller('user')
@@ -84,5 +85,10 @@ export class UserController {
     @User() { userId: actorId }: UserAuth,
   ) {
     return this.commandBus.execute(new UnfollowCommand(actorId, targetUserId));
+  }
+
+  @Get('/:username')
+  getByUsername(@Param('username') username: string) {
+    return this.queryBus.execute(new GetUserByUsernameQuery(username));
   }
 }
