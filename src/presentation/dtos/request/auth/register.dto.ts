@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsString, MaxLength, MinLength } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 
 import { AppConstant } from 'src/domain/constants';
 
@@ -10,10 +16,12 @@ export class RegisterDto {
 
   @IsString()
   @ApiProperty()
+  @IsNotEmpty()
   readonly password: string;
 
   @IsString()
   @ApiProperty()
+  @IsNotEmpty()
   readonly username: string;
 
   @IsString()
@@ -24,5 +32,6 @@ export class RegisterDto {
   @MinLength(AppConstant.Otp.OTP_CODE_LENGTH)
   @MaxLength(AppConstant.Otp.OTP_CODE_LENGTH)
   @ApiProperty()
+  @IsNotEmpty()
   readonly otpCode: string;
 }

@@ -1,10 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { RegisterDto } from '../auth';
-import { IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateUserDto extends RegisterDto {
   @IsString()
   @ApiProperty()
+  @IsNotEmpty()
   readonly normalizedName: string;
 
   @IsString()

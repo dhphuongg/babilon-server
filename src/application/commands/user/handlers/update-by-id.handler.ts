@@ -36,8 +36,11 @@ export class UpdateUserByIdHandler
       }
     }
 
+    const avatar = `images/${updateUserDto.avatar?.filename}`;
+
     const updatedUser = await this.userRepository.updateById(userid, {
       ...updateUserDto,
+      avatar: updateUserDto.avatar ? avatar : user.avatar,
       normalizedName: updateUserDto.fullName
         ? StringUtil.normalize(updateUserDto.fullName)
         : user.normalizedName,
