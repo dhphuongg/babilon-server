@@ -84,7 +84,7 @@ export class UserController {
     );
   }
 
-  @Get('following/:userId')
+  @Get('followings/:userId')
   @Auth()
   @ApiOperation({ summary: 'Get followings by user id' })
   getFollowing(
