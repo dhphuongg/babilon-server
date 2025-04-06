@@ -32,6 +32,6 @@ export class GetFollowersHandler implements IQueryHandler<GetFollowersQuery> {
         },
       },
     );
-    return { followers, ...params };
+    return { result: followers, ...params };
   }
 }
