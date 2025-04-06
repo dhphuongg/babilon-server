@@ -9,11 +9,11 @@ export class IGetListParams {
   @Type(() => Number)
   readonly page: number = 1;
 
-  @ApiProperty({ required: false, default: 10 })
+  @ApiProperty({ required: false, default: 9999 })
   @IsOptional()
   @IsNumber()
   @Type(() => Number)
-  readonly limit: number = 10;
+  readonly limit: number = 9999;
 
   // @ApiProperty({ required: false })
   // @IsOptional()
