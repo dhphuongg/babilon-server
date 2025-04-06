@@ -19,19 +19,15 @@ export class GetFollowersHandler implements IQueryHandler<GetFollowersQuery> {
   async execute(query: GetFollowersQuery): Promise<any> {
     const { userId, params } = query;
     const socialGraph = await this.socialGraphRepository.getByUserId(userId);
-    const followers = await this.userRepository.getByIdList(
-      socialGraph?.followers || [],
-      {
-        params,
-        select: {
-          id: true,
-          username: true,
-          avatar: true,
-          signature: true,
-          fullName: true,
-        },
+    return this.userRepository.getByIdList(socialGraph?.followers || [], {
+      params,
+      select: {
+        id: true,
+        username: true,
+        avatar: true,
+        signature: true,
+        fullName: true,
       },
-    );
-    return { result: followers, ...params };
+    });
   }
 }

@@ -5,12 +5,13 @@ import { IUserRepository } from '../../domain/repositories/user.repository.inter
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from 'src/presentation/dtos/request/user';
 import { IGetListParams } from 'src/presentation/dtos/request';
+import { GetListResponseDto } from 'src/presentation/dtos/response/get-list.dto';
 
 @Injectable()
 export class UserRepository implements IUserRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  getByIdList(
+  async getByIdList(
     ids: string[],
     {
       params,
@@ -19,14 +20,18 @@ export class UserRepository implements IUserRepository {
       params: IGetListParams;
       select?: { [key in keyof User]?: boolean };
     },
-  ): Promise<User[]> {
-    return this.prisma.user.findMany({
-      where: { id: { in: ids } },
-      select,
-      take: params.limit,
-      skip: (params.page - 1) * params.limit,
-      orderBy: { createdAt: 'desc' },
-    });
+  ): Promise<GetListResponseDto<User>> {
+    const [total, users] = await Promise.all([
+      this.prisma.user.count({ where: { id: { in: ids } } }),
+      this.prisma.user.findMany({
+        where: { id: { in: ids } },
+        select,
+        take: params.limit,
+        skip: (params.page - 1) * params.limit,
+        orderBy: { createdAt: 'desc' },
+      }),
+    ]);
+    return { items: users, total, ...params };
   }
 
   getById(
