@@ -1,17 +1,22 @@
 import { User } from '@prisma/client';
+
+import {
+  PickSelected,
+  SelectType,
+} from 'src/infrastructure/common/utils/type.utils';
 import { IGetListParams } from 'src/presentation/dtos/request';
 
 import { CreateUserDto } from 'src/presentation/dtos/request/user';
 import { GetListResponseDto } from 'src/presentation/dtos/response/get-list.dto';
 
 export interface IUserRepository {
-  getByIdList(
+  getByIdList<S extends SelectType<User> | undefined>(
     ids: string[],
     options: {
       params: IGetListParams;
-      select?: { [key in keyof User]?: boolean };
+      select?: S;
     },
-  ): Promise<GetListResponseDto<User>>;
+  ): Promise<GetListResponseDto<PickSelected<User, S>>>;
   getById(
     id: string,
     select?: { [key in keyof User]?: boolean },

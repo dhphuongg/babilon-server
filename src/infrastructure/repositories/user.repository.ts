@@ -6,21 +6,22 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from 'src/presentation/dtos/request/user';
 import { IGetListParams } from 'src/presentation/dtos/request';
 import { GetListResponseDto } from 'src/presentation/dtos/response/get-list.dto';
+import { PickSelected, SelectType } from '../common/utils/type.utils';
 
 @Injectable()
 export class UserRepository implements IUserRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getByIdList(
+  async getByIdList<S extends SelectType<User> | undefined>(
     ids: string[],
     {
       params,
       select,
     }: {
       params: IGetListParams;
-      select?: { [key in keyof User]?: boolean };
+      select?: S;
     },
-  ): Promise<GetListResponseDto<User>> {
+  ): Promise<GetListResponseDto<PickSelected<User, S>>> {
     const [total, users] = await Promise.all([
       this.prisma.user.count({ where: { id: { in: ids } } }),
       this.prisma.user.findMany({
@@ -31,7 +32,7 @@ export class UserRepository implements IUserRepository {
         orderBy: { createdAt: 'desc' },
       }),
     ]);
-    return { items: users, total, ...params };
+    return { items: users as PickSelected<User, S>[], total, ...params };
   }
 
   getById(
