@@ -88,20 +88,26 @@ export class UserController {
   @Auth()
   @ApiOperation({ summary: 'Get followings by user id' })
   getFollowing(
+    @User() { userId: curUserId }: UserAuth,
     @Param('userId') userId: string,
     @Query() params: IGetListParams,
   ): Promise<any> {
-    return this.queryBus.execute(new GetFollowingQuery(userId, params));
+    return this.queryBus.execute(
+      new GetFollowingQuery(curUserId, userId, params),
+    );
   }
 
   @Get('followers/:userId')
   @Auth()
   @ApiOperation({ summary: 'Get followers by user id' })
   getFollowers(
+    @User() { userId: curUserId }: UserAuth,
     @Param('userId') userId: string,
     @Query() params: IGetListParams,
   ): Promise<any> {
-    return this.queryBus.execute(new GetFollowersQuery(userId, params));
+    return this.queryBus.execute(
+      new GetFollowersQuery(curUserId, userId, params),
+    );
   }
 
   @Post('follow/:userId')

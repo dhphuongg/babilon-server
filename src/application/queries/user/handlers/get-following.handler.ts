@@ -17,17 +17,44 @@ export class GetFollowingHandler implements IQueryHandler<GetFollowingQuery> {
   ) {}
 
   async execute(query: GetFollowingQuery): Promise<any> {
-    const { userId, params } = query;
+    const { curUserId, userId, params } = query;
     const socialGraph = await this.socialGraphRepository.getByUserId(userId);
-    return this.userRepository.getByIdList(socialGraph?.following || [], {
-      params,
-      select: {
-        id: true,
-        username: true,
-        avatar: true,
-        signature: true,
-        fullName: true,
-      },
-    });
+
+    const { items: followings, ...rest } =
+      await this.userRepository.getByIdList(socialGraph?.following || [], {
+        params,
+        select: {
+          id: true,
+          username: true,
+          avatar: true,
+          signature: true,
+          fullName: true,
+        },
+      });
+
+    const items: ((typeof followings)[number] & {
+      isMe: boolean;
+      isFollowing: boolean;
+      isFollower: boolean;
+    })[] = [];
+    for (const following of followings) {
+      const isFollowing = await this.socialGraphRepository.isFollowing(
+        curUserId,
+        following.id,
+      );
+      const isFollower = await this.socialGraphRepository.isFollower(
+        curUserId,
+        following.id,
+      );
+
+      items.push({
+        ...following,
+        isMe: curUserId === following.id,
+        isFollowing,
+        isFollower,
+      });
+    }
+
+    return { items, ...rest };
   }
 }
