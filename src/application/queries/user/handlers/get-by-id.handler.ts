@@ -34,11 +34,11 @@ export class GetUserByIdHandler implements IQueryHandler<GetUserByIdQuery> {
       throw new NotFoundException('Không tìm thấy thông tin người dùng');
     }
 
-    const followers =
+    const followerCount =
       await this.socialGraphRepository.countFollowersByUserId(userId);
-    const followings =
+    const followingCount =
       await this.socialGraphRepository.countFollowingsByUserId(userId);
 
-    return { ...user, count: { followers, followings } };
+    return { ...user, stats: { followerCount, followingCount } };
   }
 }
