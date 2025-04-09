@@ -17,7 +17,7 @@ export class GetUserByIdHandler implements IQueryHandler<GetUserByIdQuery> {
   ) {}
 
   async execute(query: GetUserByIdQuery): Promise<any> {
-    const { userId, select } = query;
+    const { userId, select, curUserId } = query;
 
     const user = await this.userRepository.getById(userId, select);
     if (!user) {
@@ -28,6 +28,26 @@ export class GetUserByIdHandler implements IQueryHandler<GetUserByIdQuery> {
       await this.socialGraphRepository.countFollowersByUserId(userId);
     const followingCount =
       await this.socialGraphRepository.countFollowingsByUserId(userId);
+
+    if (curUserId) {
+      const isFollower = await this.socialGraphRepository.isFollower(
+        curUserId,
+        userId,
+      );
+
+      const isFollowing = await this.socialGraphRepository.isFollowing(
+        curUserId,
+        userId,
+      );
+
+      return {
+        ...user,
+        stats: { followerCount, followingCount },
+        isMe: curUserId === userId,
+        isFollower,
+        isFollowing,
+      };
+    }
 
     return { ...user, stats: { followerCount, followingCount } };
   }

@@ -46,16 +46,24 @@ export class UserController {
   ) {}
 
   @Get('/:userId')
+  @Auth()
   @ApiOperation({ summary: 'Get user by id' })
-  getById(@Param('userId') userId: string): Promise<any> {
+  getById(
+    @User() { userId: curUserId }: UserAuth,
+    @Param('userId') userId: string,
+  ): Promise<any> {
     return this.queryBus.execute(
-      new GetUserByIdQuery(userId, {
-        id: true,
-        fullName: true,
-        username: true,
-        avatar: true,
-        signature: true,
-      }),
+      new GetUserByIdQuery(
+        userId,
+        {
+          id: true,
+          fullName: true,
+          username: true,
+          avatar: true,
+          signature: true,
+        },
+        curUserId,
+      ),
     );
   }
 

@@ -6,5 +6,6 @@ export class GetUserByIdQuery implements IQuery {
   constructor(
     public readonly userId: string,
     public readonly select?: SelectType<User>,
+    public readonly curUserId?: string,
   ) {}
 }
