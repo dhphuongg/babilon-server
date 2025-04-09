@@ -17,10 +17,10 @@ export interface IUserRepository {
       select?: S;
     },
   ): Promise<GetListResponseDto<PickSelected<User, S>>>;
-  getById(
+  getById<S extends SelectType<User> | undefined>(
     id: string,
-    select?: { [key in keyof User]?: boolean },
-  ): Promise<User | null>;
+    select?: S,
+  ): Promise<PickSelected<User, S> | null>;
   getAllById(
     ids: string[],
     select?: { [key in keyof User]?: boolean },

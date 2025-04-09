@@ -18,10 +18,10 @@ export class UpdateUserByIdHandler
   ) {}
 
   async execute(command: UpdateUserByIdCommand): Promise<any> {
-    const { userid, updateUserDto } = command;
+    const { userId, updateUserDto } = command;
 
     // check user by id
-    const user = await this.userRepository.getById(userid);
+    const user = await this.userRepository.getById(userId);
     if (!user) {
       throw new NotFoundException('Không tìm thấy người dùng');
     }
@@ -38,7 +38,7 @@ export class UpdateUserByIdHandler
 
     const avatar = `images/${updateUserDto.avatar?.filename}`;
 
-    const updatedUser = await this.userRepository.updateById(userid, {
+    const updatedUser = await this.userRepository.updateById(userId, {
       ...updateUserDto,
       avatar: updateUserDto.avatar ? avatar : user.avatar,
       normalizedName: updateUserDto.fullName

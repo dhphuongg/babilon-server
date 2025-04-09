@@ -35,21 +35,24 @@ export class UserRepository implements IUserRepository {
     return { items: users as PickSelected<User, S>[], total, ...params };
   }
 
-  getById(
+  getById<S extends SelectType<User> | undefined>(
     id: string,
-    select?: { [key in keyof User]?: boolean },
-  ): Promise<User | null> {
-    return this.prisma.user.findUnique({ where: { id }, select });
+    select?: S,
+  ): Promise<PickSelected<User, S> | null> {
+    return this.prisma.user.findUnique({
+      where: { id },
+      select,
+    }) as Promise<PickSelected<User, S> | null>;
   }
 
-  getAllById(
+  getAllById<S extends SelectType<User> | undefined>(
     ids: string[],
-    select?: { [key in keyof User]?: boolean },
-  ): Promise<User[]> {
+    select?: S,
+  ): Promise<PickSelected<User, S>[]> {
     return this.prisma.user.findMany({
       where: { id: { in: ids } },
       select,
-    });
+    }) as Promise<PickSelected<User, S>[]>;
   }
 
   getByEmail(email: string): Promise<User | null> {
@@ -64,11 +67,14 @@ export class UserRepository implements IUserRepository {
     });
   }
 
-  getByUsername(
+  getByUsername<S extends SelectType<User> | undefined>(
     username: string,
-    select?: { [key in keyof User]?: boolean },
-  ): Promise<User | null> {
-    return this.prisma.user.findUnique({ where: { username }, select });
+    select?: S,
+  ): Promise<PickSelected<User, S> | null> {
+    return this.prisma.user.findUnique({
+      where: { username },
+      select,
+    }) as Promise<PickSelected<User, S> | null>;
   }
 
   async createUser(data: CreateUserDto): Promise<User> {
