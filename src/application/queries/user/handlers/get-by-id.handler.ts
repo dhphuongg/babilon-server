@@ -17,19 +17,9 @@ export class GetUserByIdHandler implements IQueryHandler<GetUserByIdQuery> {
   ) {}
 
   async execute(query: GetUserByIdQuery): Promise<any> {
-    const { userId } = query;
+    const { userId, select } = query;
 
-    const user = await this.userRepository.getById(userId, {
-      id: true,
-      username: true,
-      fullName: true,
-      normalizedName: true,
-      email: true,
-      avatar: true,
-      signature: true,
-      createdAt: true,
-      updatedAt: true,
-    });
+    const user = await this.userRepository.getById(userId, select);
     if (!user) {
       throw new NotFoundException('Không tìm thấy thông tin người dùng');
     }

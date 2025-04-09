@@ -33,6 +33,7 @@ import { IGetListParams } from '../dtos/request';
 import {
   GetFollowersQuery,
   GetFollowingQuery,
+  GetUserByIdQuery,
   GetUserByUsernameQuery,
 } from 'src/application/queries/user/implements';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -43,6 +44,20 @@ export class UserController {
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
   ) {}
+
+  @Get('/:userId')
+  @ApiOperation({ summary: 'Get user by id' })
+  getById(@Param('userId') userId: string): Promise<any> {
+    return this.queryBus.execute(
+      new GetUserByIdQuery(userId, {
+        id: true,
+        fullName: true,
+        username: true,
+        avatar: true,
+        signature: true,
+      }),
+    );
+  }
 
   @Patch()
   @Auth()
