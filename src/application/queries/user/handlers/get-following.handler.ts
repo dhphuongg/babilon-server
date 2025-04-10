@@ -33,11 +33,20 @@ export class GetFollowingHandler implements IQueryHandler<GetFollowingQuery> {
       });
 
     const items: ((typeof followings)[number] & {
+      stats: {
+        followerCount: number;
+        followingCount: number;
+      };
       isMe: boolean;
       isFollowing: boolean;
       isFollower: boolean;
     })[] = [];
     for (const following of followings) {
+      const followerCount =
+        await this.socialGraphRepository.countFollowersByUserId(userId);
+      const followingCount =
+        await this.socialGraphRepository.countFollowingsByUserId(userId);
+
       const isFollowing = await this.socialGraphRepository.isFollowing(
         curUserId,
         following.id,
@@ -49,6 +58,7 @@ export class GetFollowingHandler implements IQueryHandler<GetFollowingQuery> {
 
       items.push({
         ...following,
+        stats: { followerCount, followingCount },
         isMe: curUserId === following.id,
         isFollowing,
         isFollower,
