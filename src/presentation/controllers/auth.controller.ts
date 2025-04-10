@@ -84,16 +84,19 @@ export class AuthController {
   @Get('profile')
   @Auth()
   @ApiOperation({ summary: 'Get user profile' })
-  async getProfile(@User() user: UserAuth): Promise<any> {
+  async getProfile(@User() { userId }: UserAuth): Promise<any> {
     return this.queryBus.execute(
-      new GetUserByIdQuery(user.userId, {
-        id: true,
-        fullName: true,
-        username: true,
-        email: true,
-        avatar: true,
-        signature: true,
-      }),
+      new GetUserByIdQuery(
+        userId,
+        {
+          id: true,
+          fullName: true,
+          username: true,
+          avatar: true,
+          signature: true,
+        },
+        userId,
+      ),
     );
   }
 }
