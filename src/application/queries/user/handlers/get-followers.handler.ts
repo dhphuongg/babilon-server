@@ -6,6 +6,7 @@ import { ISocialGraphRepository } from 'src/domain/repositories/social-graph.rep
 import { SOCIAL_GRAPH_REPOSITORY_TOKEN } from 'src/infrastructure/providers/social-graph.repository.provider';
 import { IUserRepository } from 'src/domain/repositories/user.repository.interface';
 import { USER_REPOSITORY_TOKEN } from 'src/infrastructure/providers/user.repository.provider';
+import { UserResponseDto } from 'src/presentation/dtos/response/user/get-user.dto';
 
 @QueryHandler(GetFollowersQuery)
 export class GetFollowersHandler implements IQueryHandler<GetFollowersQuery> {
@@ -33,15 +34,7 @@ export class GetFollowersHandler implements IQueryHandler<GetFollowersQuery> {
       },
     );
 
-    const items: ((typeof followers)[number] & {
-      stats: {
-        followerCount: number;
-        followingCount: number;
-      };
-      isMe: boolean;
-      isFollowing: boolean;
-      isFollower: boolean;
-    })[] = [];
+    const items: UserResponseDto[] = [];
 
     for (const follower of followers) {
       const followerCount =
@@ -60,7 +53,8 @@ export class GetFollowersHandler implements IQueryHandler<GetFollowersQuery> {
 
       items.push({
         ...follower,
-        stats: { followerCount, followingCount },
+        followerCount,
+        followingCount,
         isMe: curUserId === follower.id,
         isFollowing,
         isFollower,

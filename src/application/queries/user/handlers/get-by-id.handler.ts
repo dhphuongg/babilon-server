@@ -6,6 +6,7 @@ import { IUserRepository } from 'src/domain/repositories/user.repository.interfa
 import { USER_REPOSITORY_TOKEN } from 'src/infrastructure/providers/user.repository.provider';
 import { SOCIAL_GRAPH_REPOSITORY_TOKEN } from 'src/infrastructure/providers/social-graph.repository.provider';
 import { ISocialGraphRepository } from 'src/domain/repositories/social-graph.repository.interface';
+import { UserResponseDto } from 'src/presentation/dtos/response/user/get-user.dto';
 
 @QueryHandler(GetUserByIdQuery)
 export class GetUserByIdHandler implements IQueryHandler<GetUserByIdQuery> {
@@ -16,7 +17,7 @@ export class GetUserByIdHandler implements IQueryHandler<GetUserByIdQuery> {
     private readonly socialGraphRepository: ISocialGraphRepository,
   ) {}
 
-  async execute(query: GetUserByIdQuery): Promise<any> {
+  async execute(query: GetUserByIdQuery): Promise<UserResponseDto> {
     const { userId, select, curUserId } = query;
 
     const user = await this.userRepository.getById(userId, select);
@@ -42,13 +43,14 @@ export class GetUserByIdHandler implements IQueryHandler<GetUserByIdQuery> {
 
       return {
         ...user,
-        stats: { followerCount, followingCount },
+        followerCount,
+        followingCount,
         isMe: curUserId === userId,
         isFollower,
         isFollowing,
       };
     }
 
-    return { ...user, stats: { followerCount, followingCount } };
+    return { ...user, followerCount, followingCount };
   }
 }
