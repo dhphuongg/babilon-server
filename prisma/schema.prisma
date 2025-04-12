@@ -46,13 +46,18 @@ model Video {
   id              String    @id @default(uuid())
   title           String    @map("title")
   normalizedTitle String    @map("normalized_title")
-  originUrl       String    @map("origin_url")
-  cdnUrl          String    @map("cdn_url")
-  thumbnail       String    @map("thumbnail")
+  duration        Float     @map("duration") // in seconds
+  url             String    @map("url") // video URL
+  thumbnail       String    @map("thumbnail") // thumbnail URL
+  cloudFileId     String    @map("cloud_file_id") // ID of the file in cloud storage
+  cloudFilePath   String    @map("cloud_file_path") // path of the file in cloud storage
+  width           Float     @map("width") // width of the video
+  height          Float     @map("height") // height of the video
+  size            Float     @map("size") // size of the video in bytes
+  isPrivate       Boolean   @default(false) @map("is_private")
   commentable     Boolean   @default(true) @map("commentable")
   userId          String    @map("user_id")
   user            User      @relation(fields: [userId], references: [id])
-  videoMetadataId String?   @unique @map("video_metadata_id")
   comments        Comment[]
   likes           Like[]
   createdAt       DateTime  @default(now()) @map("created_at")
