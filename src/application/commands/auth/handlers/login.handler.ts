@@ -5,7 +5,7 @@ import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
-import * as ms from 'ms';
+import ms from 'ms';
 
 import { LoginCommand } from '../implements';
 import { IUserRepository } from 'src/domain/repositories/user.repository.interface';

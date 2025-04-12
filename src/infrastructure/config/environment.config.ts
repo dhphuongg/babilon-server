@@ -19,6 +19,11 @@ export interface EnvironmentConfig {
     port: number;
     password: string;
   };
+  imageKit: {
+    publicKey: string;
+    privateKey: string;
+    urlEndpoint: string;
+  };
 }
 
 export const defaultConfig: EnvironmentConfig = {
@@ -41,6 +46,11 @@ export const defaultConfig: EnvironmentConfig = {
     host: 'localhost',
     port: 6379,
     password: '',
+  },
+  imageKit: {
+    publicKey: '',
+    privateKey: '',
+    urlEndpoint: '',
   },
 };
 
@@ -74,5 +84,13 @@ export const environmentConfig = () => ({
       10,
     ),
     password: process.env.REDIS_PASSWORD || defaultConfig.redis.password,
+  },
+  imageKit: {
+    publicKey:
+      process.env.IMAGE_KIT_PUBLIC_KEY || defaultConfig.imageKit.publicKey,
+    privateKey:
+      process.env.IMAGE_KIT_PRIVATE_KEY || defaultConfig.imageKit.privateKey,
+    urlEndpoint:
+      process.env.IMAGE_KIT_URL_ENDPOINT || defaultConfig.imageKit.urlEndpoint,
   },
 });

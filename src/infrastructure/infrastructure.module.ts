@@ -8,6 +8,7 @@ import { WebSocketModule } from './websocket/websocket.module';
 import { RepositoryProviders } from './providers';
 import { CacheModule } from './cache/cache.module';
 import { FcmModule } from './fcm/fcm.module';
+import { ImageKitModule } from './image-kit/image-kit.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { FcmModule } from './fcm/fcm.module';
     MailModule,
     WebSocketModule,
     FcmModule,
+    ImageKitModule,
   ],
   providers: [...RepositoryProviders],
   exports: [
@@ -28,6 +30,7 @@ import { FcmModule } from './fcm/fcm.module';
     AppConfigModule,
     WebSocketModule,
     FcmModule,
+    ImageKitModule,
   ],
 })
 export class InfrastructureModule {}
