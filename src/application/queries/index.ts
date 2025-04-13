@@ -1,3 +1,4 @@
 import { UserQueryHandlers } from './user/handlers';
+import { VideoQueryHandlers } from './video/handlers';
 
-export const QueryHandlers = [...UserQueryHandlers];
+export const QueryHandlers = [...UserQueryHandlers, ...VideoQueryHandlers];

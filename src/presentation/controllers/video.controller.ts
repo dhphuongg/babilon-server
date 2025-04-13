@@ -1,13 +1,15 @@
 import {
   Body,
   Controller,
+  Get,
   HttpStatus,
   ParseFilePipeBuilder,
   Post,
+  Query,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
-import { CommandBus } from '@nestjs/cqrs';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ApiConsumes } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as multer from 'multer';
@@ -17,10 +19,15 @@ import { Auth } from 'src/infrastructure/common/decorators/auth.decorator';
 import { UserAuth } from 'src/domain/interfaces/jwt-payload.interface';
 import { User } from 'src/infrastructure/common/decorators/user-auth.decorator';
 import { CreateVideoCommand } from 'src/application/commands/video/implements';
+import { IGetListParams } from '../dtos/request';
+import { GetListVideoQuery } from 'src/application/queries/video/implements';
 
 @Controller('video')
 export class VideoController {
-  constructor(private readonly commandBus: CommandBus) {}
+  constructor(
+    private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
+  ) {}
 
   @Post()
   @Auth()
@@ -45,5 +52,14 @@ export class VideoController {
     return this.commandBus.execute(
       new CreateVideoCommand(userId, createVideoDto),
     );
+  }
+
+  @Get()
+  @Auth()
+  getMyListVideo(
+    @User() { userId }: UserAuth,
+    @Query() getListParams: IGetListParams,
+  ) {
+    return this.queryBus.execute(new GetListVideoQuery(userId, getListParams));
   }
 }
