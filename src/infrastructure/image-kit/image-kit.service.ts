@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { ConfigService } from '@nestjs/config';
 import ImageKit from 'imagekit';
 
@@ -49,7 +50,6 @@ export class ImageKitService {
         fileId: result.fileId,
         url: result.url,
         thumbnail: result.url + '/ik-thumbnail.jpg',
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         duration: (result as any).duration,
         height: result.height,
         width: result.width,
@@ -59,6 +59,47 @@ export class ImageKitService {
     } catch (error) {
       this.logger.error('Error uploading video:', error);
       throw new Error('Video upload failed');
+    }
+  }
+
+  async changeVideoPrivateStatus({
+    fileId,
+    userId,
+    isPrivateFile,
+  }: {
+    fileId: string;
+    userId: string;
+    isPrivateFile: boolean;
+  }): Promise<VideoUploadResponse> {
+    try {
+      const file = await this.imageKit.getFileDetails(fileId);
+
+      const newFile = await this.imageKit.upload({
+        file: file.url.split('?')[0],
+        fileName: file.name,
+        folder: `babilon/videos/${userId}`,
+        isPrivateFile,
+        transformation: {
+          post: [{ type: 'abs', protocol: 'hls', value: 'video' }],
+        },
+        overwriteFile: true,
+      });
+
+      await this.imageKit.deleteFile(fileId);
+
+      return {
+        fileId: newFile.fileId,
+        url: newFile.url,
+        thumbnail: newFile.url + '/ik-thumbnail.jpg',
+        duration: (newFile as any).duration,
+        height: newFile.height,
+        width: newFile.width,
+        size: newFile.size,
+        filePath: newFile.filePath,
+      };
+    } catch (error) {
+      this.logger.error('Error when private file:', error);
+      throw new Error('Private file failed');
     }
   }
 }
