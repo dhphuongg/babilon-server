@@ -8,7 +8,7 @@ import { WebSocketModule } from './websocket/websocket.module';
 import { RepositoryProviders } from './providers';
 import { CacheModule } from './cache/cache.module';
 import { FcmModule } from './fcm/fcm.module';
-import { ImageKitModule } from './image-kit/image-kit.module';
+import { CloudStorageModule } from './cloud-storage/cloud-storage.module';
 
 @Module({
   imports: [
@@ -19,7 +19,12 @@ import { ImageKitModule } from './image-kit/image-kit.module';
     MailModule,
     WebSocketModule,
     FcmModule,
-    ImageKitModule,
+    CloudStorageModule.forRoot({
+      type: 'cloudinary',
+      apiKey: process.env.CLOUDINARY_API_KEY,
+      apiSecret: process.env.CLOUDINARY_API_SECRET,
+      cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+    }),
   ],
   providers: [...RepositoryProviders],
   exports: [
@@ -30,7 +35,6 @@ import { ImageKitModule } from './image-kit/image-kit.module';
     AppConfigModule,
     WebSocketModule,
     FcmModule,
-    ImageKitModule,
   ],
 })
 export class InfrastructureModule {}

@@ -24,7 +24,7 @@ export class CreateVideoDto {
 
 export class VideoUploadDto {
   video: Express.Multer.File;
-  isPrivateFile: boolean;
+  isPrivate?: boolean;
   userId: string;
 }
 
@@ -32,9 +32,9 @@ export class VideoUploadResponse {
   fileId: string;
   duration: number;
   url: string;
+  hlsUrl: string;
   thumbnail: string;
   height: number;
   width: number;
   size: number;
-  filePath: string;
 }

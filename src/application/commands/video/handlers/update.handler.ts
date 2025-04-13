@@ -1,16 +1,20 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { Inject, NotFoundException } from '@nestjs/common';
+
 import { UpdateVideoCommand } from '../implements';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
-import { NotFoundException } from '@nestjs/common';
 import { StringUtil } from 'src/infrastructure/common/utils';
-import { ImageKitService } from 'src/infrastructure/image-kit/image-kit.service';
-import { VideoUploadResponse } from 'src/presentation/dtos/request/video';
+import {
+  CLOUD_STORAGE_PROVIDER,
+  ICloudStorageService,
+} from 'src/infrastructure/cloud-storage/interface';
 
 @CommandHandler(UpdateVideoCommand)
 export class UpdateVideoHandler implements ICommandHandler<UpdateVideoCommand> {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly imageKitService: ImageKitService,
+    @Inject(CLOUD_STORAGE_PROVIDER)
+    private readonly cloudStorageService: ICloudStorageService,
   ) {}
 
   async execute(command: UpdateVideoCommand): Promise<any> {
@@ -27,43 +31,43 @@ export class UpdateVideoHandler implements ICommandHandler<UpdateVideoCommand> {
       normalizedTitle = StringUtil.normalize(updateVideoDto.title);
     }
 
-    let newCloudVideo: VideoUploadResponse = {
-      fileId: video.cloudFileId,
-      url: video.url,
-      thumbnail: video.thumbnail,
-      duration: video.duration,
-      height: video.height,
-      width: video.width,
-      size: video.size,
-      filePath: video.cloudFilePath,
-    };
-    if (updateVideoDto.isPrivate && !video.isPrivate) {
-      newCloudVideo = await this.imageKitService.changeVideoPrivateStatus({
-        fileId: video.cloudFileId,
-        userId,
-        isPrivateFile: true,
-      });
-    } else if (!updateVideoDto.isPrivate && video.isPrivate) {
-      newCloudVideo = await this.imageKitService.changeVideoPrivateStatus({
-        fileId: video.cloudFileId,
-        userId,
-        isPrivateFile: false,
-      });
-    }
+    // let newCloudVideo: VideoUploadResponse = {
+    //   fileId: video.cloudFileId,
+    //   url: video.url,
+    //   hlsUrl: video.hlsUrl,
+    //   thumbnail: video.thumbnail,
+    //   duration: video.duration,
+    //   height: video.height,
+    //   width: video.width,
+    //   size: video.size,
+    // };
+    // if (updateVideoDto.isPrivate && !video.isPrivate) {
+    //   newCloudVideo = await this.cloudStorageService.changeVideoPrivateStatus({
+    //     fileId: video.cloudFileId,
+    //     userId,
+    //     isPrivateFile: true,
+    //   });
+    // } else if (!updateVideoDto.isPrivate && video.isPrivate) {
+    //   newCloudVideo = await this.cloudStorageService.changeVideoPrivateStatus({
+    //     fileId: video.cloudFileId,
+    //     userId,
+    //     isPrivateFile: false,
+    //   });
+    // }
 
     await this.prisma.video.update({
       where: { id: video.id },
       data: {
         ...updateVideoDto,
         normalizedTitle,
-        cloudFileId: newCloudVideo.fileId,
-        url: newCloudVideo.url,
-        thumbnail: newCloudVideo.thumbnail,
-        duration: newCloudVideo.duration,
-        height: newCloudVideo.height,
-        width: newCloudVideo.width,
-        size: newCloudVideo.size,
-        cloudFilePath: newCloudVideo.filePath,
+        // cloudFileId: newCloudVideo.fileId,
+        // url: newCloudVideo.url,
+        // hlsUrl: newCloudVideo.hlsUrl,
+        // thumbnail: newCloudVideo.thumbnail,
+        // duration: newCloudVideo.duration,
+        // height: newCloudVideo.height,
+        // width: newCloudVideo.width,
+        // size: newCloudVideo.size,
       },
     });
 

@@ -24,6 +24,11 @@ export interface EnvironmentConfig {
     privateKey: string;
     urlEndpoint: string;
   };
+  cloudinary: {
+    cloudName: string;
+    apiKey: string;
+    apiSecret: string;
+  };
 }
 
 export const defaultConfig: EnvironmentConfig = {
@@ -51,6 +56,11 @@ export const defaultConfig: EnvironmentConfig = {
     publicKey: '',
     privateKey: '',
     urlEndpoint: '',
+  },
+  cloudinary: {
+    cloudName: '',
+    apiKey: '',
+    apiSecret: '',
   },
 };
 
@@ -92,5 +102,12 @@ export const environmentConfig = () => ({
       process.env.IMAGE_KIT_PRIVATE_KEY || defaultConfig.imageKit.privateKey,
     urlEndpoint:
       process.env.IMAGE_KIT_URL_ENDPOINT || defaultConfig.imageKit.urlEndpoint,
+  },
+  cloudinary: {
+    cloudName:
+      process.env.CLOUDINARY_CLOUD_NAME || defaultConfig.cloudinary.cloudName,
+    apiKey: process.env.CLOUDINARY_API_KEY || defaultConfig.cloudinary.apiKey,
+    apiSecret:
+      process.env.CLOUDINARY_API_SECRET || defaultConfig.cloudinary.apiSecret,
   },
 });
