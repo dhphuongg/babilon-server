@@ -48,9 +48,9 @@ model Video {
   normalizedTitle String    @map("normalized_title")
   duration        Float     @map("duration") // in seconds
   url             String    @map("url") // video URL
+  hlsUrl          String    @map("hls_url") // HLS URL for adaptive streaming
   thumbnail       String    @map("thumbnail") // thumbnail URL
   cloudFileId     String    @map("cloud_file_id") // ID of the file in cloud storage
-  cloudFilePath   String    @map("cloud_file_path") // path of the file in cloud storage
   width           Float     @map("width") // width of the video
   height          Float     @map("height") // height of the video
   size            Float     @map("size") // size of the video in bytes
