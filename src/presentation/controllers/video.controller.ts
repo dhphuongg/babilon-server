@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpStatus,
   Param,
@@ -22,6 +23,7 @@ import { UserAuth } from 'src/domain/interfaces/jwt-payload.interface';
 import { User } from 'src/infrastructure/common/decorators/user-auth.decorator';
 import {
   CreateVideoCommand,
+  DeleteVideoCommand,
   UpdateVideoCommand,
 } from 'src/application/commands/video/implements';
 import { IGetListParams } from '../dtos/request';
@@ -79,5 +81,11 @@ export class VideoController {
     return this.commandBus.execute(
       new UpdateVideoCommand(userId, videoId, updateVideoDto),
     );
+  }
+
+  @Delete(':videoId')
+  @Auth()
+  deleteById(@User() { userId }: UserAuth, @Param('videoId') videoId: string) {
+    return this.commandBus.execute(new DeleteVideoCommand(userId, videoId));
   }
 }

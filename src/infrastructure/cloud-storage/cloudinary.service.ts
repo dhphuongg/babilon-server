@@ -98,5 +98,7 @@ export class CloudinaryService implements ICloudStorageService {
     };
   }
 
-  deleteVideo: (fileId: string) => Promise<void>;
+  async deleteVideo(fileId: string): Promise<void> {
+    await cloudinary.uploader.destroy(fileId, { resource_type: 'video' });
+  }
 }
